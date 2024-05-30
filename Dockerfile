@@ -9,7 +9,7 @@ COPY . .
 RUN npm install
 
 ENV port=4000 \
-    db="mongodb+srv://Natnael:e840qPAaOMYxgeSC@cluster0.vs0kmkg.mongodb.net/chat-admin?retryWrites=true&w=majority&appName=Cluster0"
+    db="mongodb+srv://Natnael:e840qPAaOMYxgeSC@cluster0.vs0kmkg.mongodb.net/one-tap?retryWrites=true&w=majority&appName=Cluster0"
 
 EXPOSE 4000
 

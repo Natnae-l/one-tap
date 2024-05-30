@@ -1,10 +1,8 @@
 const express = require("express");
+const accountController = require("../controller/account");
 
 const router = express.Router();
 
-router.post("account", async (req, res) => {
-  try {
-  } catch (error) {}
-});
+router.post("/account", accountController.createAccount);
 
 module.exports = router;

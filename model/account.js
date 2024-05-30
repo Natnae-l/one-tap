@@ -1,5 +1,20 @@
 const mongoose = require("mongoose");
 
+const otpSchema = new mongoose.Schema(
+  {
+    otp: {
+      type: String,
+      required: true,
+    },
+    expiresAt: {
+      type: Date,
+      default: Date.now,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
 const userSchema = new mongoose.Schema(
   {
     phone: {
@@ -20,11 +35,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    otp: [
-      {
-        type: Number,
-      },
-    ],
+    otp: [otpSchema],
     fingerprint: {
       type: String,
     },
