@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+
+require("dotenv").config();
 
 const otpSchema = new mongoose.Schema(
   {
@@ -36,8 +39,11 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     otp: [otpSchema],
-    fingerprint: {
+    email: { type: String, required: true },
+    tokens: [String],
+    fingerPrint: {
       type: String,
+      required: true,
     },
   },
   {
@@ -46,7 +52,10 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.generateToken = async function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
+  const token = jwt.sign(
+    { phone: this.phone, _id: this._id, role: this.role },
+    process.env.secretJWT
+  );
   this.tokens.push(token);
   await this.save();
   return token;

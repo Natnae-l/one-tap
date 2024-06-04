@@ -2,12 +2,25 @@ const Account = require("../../model/account");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const axios = require("axios");
+const Pulsar = require("pulsar-client");
+const { encrypt } = require("../encryption/encryption");
+
+require("dotenv").config();
+
+const client = new Pulsar.Client({
+  serviceUrl: process.env.pulsarUrl,
+});
+(async () => {
+  const producer = await client.createProducer({
+    topic: "pay",
+  });
+})();
 
 const roles = ["merchant", "customer"];
 
 async function createAccount(req, res) {
   try {
-    const { phone, password, role } = req.body;
+    const { phone, password, role, fingerPrint, email } = req.body;
 
     if (!validator.isLength(password, { min: 6 })) {
       return res
@@ -36,6 +49,8 @@ async function createAccount(req, res) {
       password: hashedPassword,
       role,
       otp: [{ otp: hashedOtp }],
+      fingerPrint: fingerPrint,
+      email: email,
     });
 
     const otpSent = await sendOtp(phone, generatedOtp);
@@ -48,21 +63,22 @@ async function createAccount(req, res) {
 
 async function verifyOtpInput(req, res) {
   try {
-    const { otp, phone } = req.body;
+    const { otp, phone, fingerPrint } = req.body;
 
-    if (String(otp).length != 4) {
-      return res.status(400).send({ error: "Invalid otp" });
-    }
+    // if (String(otp).length != 4) {
+    //   return res.status(400).send({ error: "Invalid otp" });
+    // }
 
     const otpInfo = await Account.findOne(
-      { phone: phone },
+      { phone: phone, fingerPrint: fingerPrint },
       {
         otp: 1,
+        email: 1,
       }
     );
 
     if (!otpInfo)
-      return res.status(404).send({ error: "Information not found" });
+      return res.status(401).send({ error: "Information not found" });
 
     const verified = await verifyOtp(otp, otpInfo);
 
@@ -77,6 +93,14 @@ async function verifyOtpInput(req, res) {
       }
     );
 
+    let data = encrypt({
+      email: otpInfo.email,
+      message: "Account verified successfully",
+    });
+
+    await producer.send({
+      data: Buffer.from(JSON.stringify(data)),
+    });
     res.status(200).send({ message: "Account verified" });
   } catch (error) {
     res.status(500).send({ error: "internal server error" });
@@ -86,9 +110,17 @@ async function verifyOtpInput(req, res) {
 // regenerate otp for further application of account verification
 async function regenerateOtp(req, res) {
   try {
-    const { phone } = req.body;
+    const { phone, fingerPrint } = req.body;
 
     if (!phone) return res.status(400).send({ error: "Invalid phone number" });
+
+    const account = await Account.findOne({
+      phone: phone,
+      fingerPrint: fingerPrint,
+    });
+
+    if (!account)
+      return res.status(400).send({ error: "Invalid phone number" });
 
     const generatedOtp = generateOtp();
     const newHashedOtp = await bcrypt.hash(String(generatedOtp), 8);
@@ -112,7 +144,7 @@ async function regenerateOtp(req, res) {
 
 // generates a random otp
 function generateOtp() {
-  return Math.round(+Math.random().toFixed(4) * 10e3);
+  return Math.round(+Math.random().toFixed(4) * 1e4);
 }
 
 // a function to verify an otp with the given one

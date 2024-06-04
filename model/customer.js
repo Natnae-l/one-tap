@@ -11,9 +11,6 @@ const customerSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    description: {
-      type: String,
-    },
     accountId: {
       type: mongoose.Schema.ObjectId,
       required: true,

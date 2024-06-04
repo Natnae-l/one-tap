@@ -15,8 +15,6 @@ const generateRSAKeys = () => {
   console.log("Keys generated and saved to files.");
 };
 
-// generateRSAKeys();
-
 const publicKeyPem = fs.readFileSync("public_key.pem", "utf8");
 const privateKeyPem = fs.readFileSync("private_key.pem", "utf8");
 

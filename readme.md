@@ -15,6 +15,6 @@ during all verification proccess, check the fingerprint of the application mainl
 - fill information [fill account detail ]
   example:- name, account number
 
-- before transaction get's approved create an otp verification to knpw that the requester is that particular customer
+- before transaction get's approved create an otp verification to know that the requester is that particular customer
 - make transaction [make payment from customers bank account to merchants bank account], during that save the transaction
 - during transaction, account creation make an api to send notification to their phone number and email
