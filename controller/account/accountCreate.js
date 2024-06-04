@@ -10,8 +10,9 @@ require("dotenv").config();
 const client = new Pulsar.Client({
   serviceUrl: process.env.pulsarUrl,
 });
+let producer;
 (async () => {
-  const producer = await client.createProducer({
+  producer = await client.createProducer({
     topic: "pay",
   });
 })();
@@ -103,6 +104,7 @@ async function verifyOtpInput(req, res) {
     });
     res.status(200).send({ message: "Account verified" });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ error: "internal server error" });
   }
 }

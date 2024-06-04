@@ -13,7 +13,7 @@ ENV port=4000 \
     secretJWT="sc$nc483nr4#z" \
     gatewayId=122123 \
     pulsarUrl="pulsar://196.188.120.21:30900" \
-    serviceUrl="http:localhost:4000"
+    serverUrl="http://localhost:4000"
 
 EXPOSE 4000
 
