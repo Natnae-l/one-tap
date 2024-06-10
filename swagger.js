@@ -2,6 +2,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 
 require("dotenv").config();
+
 const options = {
   definition: {
     openapi: "3.0.0",

@@ -44,15 +44,17 @@ const authCustomer = async (req, res, next) => {
 
     if (token) {
       const auth = jwt.verify(token, process.env.secretJWT);
-      if (auth) {
-        req.phone = auth.phone;
-        req._id = auth._id;
+      try {
+        if (auth) {
+          req.phone = auth.phone;
+          req._id = auth._id;
 
-        if (auth.role != "customer") {
-          return res.status(401).send({ error: "not authorized" });
+          if (auth.role != "customer") {
+            return res.status(401).send({ error: "not authorized" });
+          }
+          next();
         }
-        next();
-      } else {
+      } catch (error) {
         res.status(400).send({
           error: "not authorized",
         });
@@ -72,15 +74,17 @@ const authMerchant = async (req, res, next) => {
 
     if (token) {
       const auth = jwt.verify(token, process.env.secretJWT);
-      if (auth) {
-        req.phone = auth.phone;
-        req._id = auth._id;
+      try {
+        if (auth) {
+          req.phone = auth.phone;
+          req._id = auth._id;
 
-        if (auth.role != "merchant") {
-          return res.status(401).send({ error: "not authorized" });
+          if (auth.role != "merchant") {
+            return res.status(401).send({ error: "not authorized" });
+          }
+          next();
         }
-        next();
-      } else {
+      } catch (error) {
         res.status(400).send({
           error: "not authorized",
         });

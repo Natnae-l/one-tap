@@ -305,3 +305,44 @@ module.exports = router;
  *                     name:
  *                       type: string
  */
+
+/**
+ * @swagger
+ * /transaction:
+ *   post:
+ *     summary: Make a transaction
+ *     tags: [Transaction]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - customerId
+ *               - merchantId
+ *               - amount
+ *               - item
+ *             properties:
+ *               customerId:
+ *                 type: string
+ *                 description: The ID of the customer
+ *               merchantId:
+ *                 type: string
+ *                 description: The ID of the merchant
+ *               amount:
+ *                 type: number
+ *                 description: The amount to be transferred
+ *               item:
+ *                 type: string
+ *                 description: The item being purchased
+ *     responses:
+ *       201:
+ *         description: Transaction processed successfully
+ *       400:
+ *         description: Invalid input or transaction cannot be processed
+ *       402:
+ *         description: Forbidden
+ *       500:
+ *         description: Failed to make transaction
+ */

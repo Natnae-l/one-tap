@@ -97,7 +97,7 @@ async function makeTransaction(req, res) {
         amount: amount,
         item: item,
       });
-      await sendNotification("+251913208901", `1111`);
+      await sendNotification(customerId, `1111`);
       return res
         .status(201)
         .send({ message: "Transaction processed successfully" });
